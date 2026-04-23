@@ -1,347 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recovered Tape // DO NOT WATCH</title>
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>You Have Been Chosen</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-
-html,body{
-height:100%;
-width:100%;
-background:#000;
-color:#eee;
-font-family:"Courier New", monospace;
-overflow:hidden;
-}
-
-/* BACKGROUND */
-canvas{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-z-index:0;
-}
-
-/* VHS / CRT */
-.overlay{
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-pointer-events:none;
-}
-
-.scanlines{
-background:repeating-linear-gradient(
-to bottom,
-rgba(255,255,255,.05) 0px,
-rgba(255,255,255,.05) 1px,
-transparent 2px,
-transparent 4px
-);
-opacity:.2;
-animation:scan 8s linear infinite;
-}
-
-.noise{
-background-image:radial-gradient(circle,rgba(255,255,255,.7) .7px,transparent 1px);
-background-size:4px 4px;
-opacity:.05;
-animation:noise .15s infinite;
-}
-
-.vignette{
-background:radial-gradient(circle,transparent 40%,rgba(0,0,0,.6));
-}
-
-/* MAIN FRAME */
-.frame{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:90%;
-max-width:900px;
-padding:40px;
-border:1px solid rgba(255,255,255,.08);
-background:rgba(0,0,0,.7);
-text-align:center;
-box-shadow:0 0 40px rgba(255,0,0,.1);
-}
-
-/* TEXT */
-.title{
-font-size:clamp(30px,6vw,80px);
-letter-spacing:.1em;
-text-transform:uppercase;
-margin-bottom:20px;
-}
-
-.subtitle{
-opacity:.8;
-margin-bottom:20px;
-}
-
-.type{
-white-space:pre-wrap;
-font-size:18px;
-min-height:160px;
-}
-
-.cursor{
-animation:blink 1s infinite;
-}
-
-/* BUTTON */
-.btn{
-margin-top:30px;
-padding:12px 20px;
-border:1px solid rgba(255,255,255,.2);
-cursor:pointer;
-font-size:12px;
-letter-spacing:.2em;
-background:none;
-color:white;
-}
-
-/* GLITCH */
-.glitch{
-position:relative;
-}
-
-.glitch::before,
-.glitch::after{
-content:attr(data-text);
-position:absolute;
-top:0;left:0;
-width:100%;
-opacity:.6;
-}
-
-.glitch::before{
-color:red;
-transform:translate(2px,-2px);
-}
-
-.glitch::after{
-color:cyan;
-transform:translate(-2px,2px);
-}
-
-/* HIDDEN FIGURE FLASH */
-.shadow{
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:radial-gradient(circle at center, transparent 20%, rgba(0,0,0,.9));
-opacity:0;
-z-index:20;
-}
-
-/* FLASH */
-.flash{
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:#fff;
-opacity:0;
-z-index:50;
-}
-
-/* ANIMATIONS */
-@keyframes blink{50%{opacity:0}}
-@keyframes scan{0%{transform:translateY(-2%)}100%{transform:translateY(2%)}}
-@keyframes noise{0%{transform:translate(0,0)}100%{transform:translate(1%,1%)}}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;700&display=swap');
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; background:#000; font-family:'Cinzel', serif; }
+#vid-wrap { position:fixed; inset:0; z-index:0; }
+#bg-video { width:100%; height:100%; object-fit:cover; object-position:center center; }
+#mk-top { position:absolute; top:0; left:0; right:0; height:10%; background:linear-gradient(to bottom,#000 30%,transparent); z-index:1; }
+#mk-bottom { position:absolute; bottom:0; left:0; right:0; height:14%; background:linear-gradient(to top, #000 30%,transparent); z-index:1; }
+#mk-left { position:absolute; top:0; left:0; bottom:0; width:6%; background:linear-gradient(to right, #000 20%,transparent); z-index:1; }
+#mk-right { position:absolute; top:0; right:0; bottom:0; width:6%; background:linear-gradient(to left, #000 20%,transparent); z-index:1; }
+#grain { position:fixed; inset:0; z-index:2; pointer-events:none; opacity:.04; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"); background-size:200px 200px; animation:gr .1s steps(1) infinite; }
+@keyframes gr { 0%{background-position:0 0} 25%{background-position:55px -30px} 50%{background-position:-22px 48px} 75%{background-position:38px 18px} }
+#vig { position:fixed; inset:0; z-index:3; pointer-events:none; background:radial-gradient(ellipse at 50% 50%,transparent 28%,rgba(0,0,0,.72) 100%); }
+#tap-gate { position:fixed; inset:0; z-index:20; display:flex; align-items:center; justify-content:center; background:#000; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+#tap-gate p { font-family:'Cinzel',serif; font-size:clamp(13px,3vw,18px); letter-spacing:.45em; color:rgba(255,255,255,.55); text-transform:uppercase; pointer-events:none; animation:tapPulse 2s ease-in-out infinite; }
+@keyframes tapPulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+#overlay { position:fixed; inset:0; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px 20px; pointer-events:none; opacity:0; transition:opacity 1.6s ease; }
+#overlay.visible { opacity:1; pointer-events:auto; }
+#overlay.visible .ov-pre { animation:rise .9s .1s ease forwards; }
+#overlay.visible .ov-name { animation:rise 1.1s .5s ease forwards; }
+#overlay.visible .ov-divider { animation:rise .8s 1.0s ease forwards; }
+#overlay.visible .ov-copy { animation:rise .9s 1.4s ease forwards; }
+#overlay.visible .ov-position { animation:rise 1s 1.9s ease forwards; }
+#overlay.visible #accept-btn { animation:rise 1s 2.5s ease forwards; }
+#overlay.visible .btn-note { animation:rise .8s 3.0s ease forwards; }
+.ov-inner { max-width:540px; width:100%; }
+.ov-pre { font-family:'Cinzel',serif; font-size:clamp(11px,2vw,14px); letter-spacing:.6em; color:rgba(255,255,255,.75); font-weight:700; text-transform:uppercase; margin-bottom:16px; opacity:0; }
+.ov-name { font-family:'Cinzel Decorative',serif; font-size:clamp(36px,9vw,70px); font-weight:900; color:#fff; letter-spacing:.04em; line-height:1.0; display:block; opacity:0; text-shadow:0 2px 40px rgba(0,0,0,1),0 0 80px rgba(0,0,0,.8),0 0 4px rgba(0,0,0,1); }
+.ov-divider { display:flex; align-items:center; gap:16px; margin:18px auto; max-width:280px; opacity:0; }
+.ov-div-line { flex:1; height:1px; background:rgba(255,255,255,.28); }
+.ov-div-sym { font-size:11px; color:rgba(255,255,255,.38); letter-spacing:.3em; }
+.ov-copy { font-family:'Cinzel',serif; font-size:clamp(14px,2.8vw,19px); color:rgba(255,255,255,.85); letter-spacing:.1em; line-height:2.1; margin-bottom:6px; opacity:0; text-shadow:0 2px 24px rgba(0,0,0,1),0 0 50px rgba(0,0,0,.8); }
+.ov-copy em { font-style:normal; color:#fff; font-weight:700; }
+.ov-position { font-family:'Cinzel Decorative',serif; font-size:clamp(19px,4.5vw,30px); font-weight:700; color:#fff; letter-spacing:.1em; display:block; margin-top:10px; opacity:0; text-shadow:0 2px 30px rgba(0,0,0,1),0 0 60px rgba(0,0,0,.7); }
+#accept-btn { display:inline-block; margin-top:32px; padding:15px 44px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.6); color:#fff; font-family:'Cinzel',serif; font-size:clamp(12px,2.4vw,16px); letter-spacing:.5em; text-transform:uppercase; text-decoration:none; cursor:pointer; opacity:0; transition:background .3s,border-color .3s,letter-spacing .3s; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+#accept-btn:hover { background:rgba(255,255,255,.22); border-color:#fff; letter-spacing:.6em; }
+#accept-btn:active { background:rgba(255,255,255,.3); }
+.btn-note { display:block; font-family:'Cinzel',serif; font-size:clamp(9px,1.4vw,12px); letter-spacing:.38em; color:rgba(255,255,255,.6); text-transform:uppercase; margin-top:13px; pointer-events:none; opacity:0; }
+@keyframes rise { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 </style>
 </head>
-
 <body>
-
-<canvas id="bg"></canvas>
-
-<div class="overlay scanlines"></div>
-<div class="overlay noise"></div>
-<div class="overlay vignette"></div>
-
-<div class="shadow" id="shadow"></div>
-<div class="flash" id="flash"></div>
-
-<div class="frame" id="frame">
-
-<div class="title glitch" data-text="THIS TAPE WAS NOT MEANT TO BE FOUND">
-THIS TAPE WAS NOT MEANT TO BE FOUND
+<div id="tap-gate"><p>Tap to Begin</p></div>
+<div id="vid-wrap">
+  <video id="bg-video" muted playsinline preload="auto">
+    <source src="Black.MOV" type="video/quicktime">
+  </video>
+  <audio id="bg-audio" preload="auto">
+    <source src="Dark%20Fantasy%20Tiktok%20Song%20(slowed%20%20reverb)%20Yamaha%20-%20Dorian%20concept.mp3" type="audio/mpeg">
+  </audio>
+  <div id="mk-top"></div>
+  <div id="mk-bottom"></div>
+  <div id="mk-left"></div>
+  <div id="mk-right"></div>
 </div>
-
-<div class="type" id="type"></div>
-
-<button class="btn" id="start">PLAY RECORDING</button>
-
+<div id="grain"></div>
+<div id="vig"></div>
+<div id="overlay">
+  <div class="ov-inner">
+    <p class="ov-pre">A message from beyond</p>
+    <span class="ov-name" id="el-name"></span>
+    <div class="ov-divider">
+      <div class="ov-div-line"></div>
+      <span class="ov-div-sym">— ✦ —</span>
+      <div class="ov-div-line"></div>
+    </div>
+    <p class="ov-copy">
+      <em id="el-host"></em> is asking you<br>
+      to stand beside them<br>
+      at the most unholy day of their life —<br>
+      as their
+    </p>
+    <span class="ov-position" id="el-position"></span>
+    <a id="accept-btn" href="#">Do You Accept?</a>
+    <span class="btn-note">Tap to reply</span>
+  </div>
 </div>
-
 <script>
-/* ================================
-   INVITE DATA (EDIT THIS)
-================================ */
-const INVITE = {
-name: "Sam Newman",
-lines: [
-"They said not to watch this.",
-"We found the camera in the woods.",
-"There were no footprints leaving.",
-"The audio was... wrong.",
-"We tried to delete the file.",
-"It came back.",
-"It always comes back.",
-"...",
-"Then it said a name.",
-"",
-"YOUR NAME WAS THERE."
-],
-final:
-"When everything breaks, I know who stands with me.\n\nWill you be my groomsman?"
-};
+  /* CHANGE THESE 3 FOR EACH PERSON */
+  var PERSON_NAME   = "BRYAN FAROUL";
+  var HOST_NAME     = "TYLER";
+  var POSITION_NAME = "GROOMSMAN";
 
-/* ================================
-   TYPEWRITER
-================================ */
-const typeBox = document.getElementById("type");
-let i=0, text="";
-function typeLine(lines){
-text = lines.join("\n");
-i=0;
+  var TYLER_PHONE = "17706088227";
+  var JULIE_PHONE = "16232174811";
 
-function step(){
-let display = text.substring(0,i);
-if(Math.random()>.97){
-display = display.replace(/./g,c=>Math.random()>.98?"#":c);
-}
+  document.getElementById('el-name').textContent     = PERSON_NAME;
+  document.getElementById('el-host').textContent     = HOST_NAME;
+  document.getElementById('el-position').textContent = POSITION_NAME;
 
-typeBox.innerHTML = display + '<span class="cursor">|</span>';
-i++;
+  var phone    = HOST_NAME.trim().toUpperCase() === "JULIE" ? JULIE_PHONE : TYLER_PHONE;
+  var smsBody  = encodeURIComponent(PERSON_NAME + " accepted! They are in as your " + POSITION_NAME + ".");
+  document.getElementById('accept-btn').href = 'sms:+' + phone + '&body=' + smsBody;
 
-if(i<=text.length){
-setTimeout(step, Math.random()*40+30);
-}else{
-setTimeout(revealName,1000);
-}
-}
-step();
-}
+  var vid     = document.getElementById('bg-video');
+  var bgAudio = document.getElementById('bg-audio');
+  var gate    = document.getElementById('tap-gate');
+  var overlay = document.getElementById('overlay');
+  var acceptBtn = document.getElementById('accept-btn');
 
-/* ================================
-   REVEAL NAME GLITCH
-================================ */
-function revealName(){
-typeBox.innerHTML = "LOADING IDENTITY...\n\n" + INVITE.name;
+  function startExperience() {
+    bgAudio.currentTime = 10;
+    var vPlay = vid.play();
+    var aPlay = bgAudio.play();
+    if (vPlay) vPlay.catch(function(){});
+    if (aPlay) aPlay.catch(function(){});
+    gate.style.display = 'none';
+  }
+  gate.addEventListener('click',      startExperience, { once: true });
+  gate.addEventListener('touchstart', startExperience, { once: true, passive: true });
 
-glitchBurst();
-setTimeout(finalReveal,2000);
-}
+  vid.addEventListener('ended', function() {
+    vid.currentTime = vid.duration;
+    vid.pause();
+    overlay.classList.add('visible');
+  });
 
-/* ================================
-   FINAL SCREEN
-================================ */
-function finalReveal(){
-typeBox.innerHTML = INVITE.final;
-}
-
-/* ================================
-   GLITCH + SHADOW
-================================ */
-function glitchBurst(){
-const shadow = document.getElementById("shadow");
-const flash = document.getElementById("flash");
-
-shadow.style.opacity = .9;
-flash.style.opacity = .8;
-
-setTimeout(()=>{
-shadow.style.opacity = 0;
-flash.style.opacity = 0;
-},120);
-}
-
-/* random shadow flickers */
-setInterval(()=>{
-if(Math.random()>.93){
-glitchBurst();
-}
-},2000);
-
-/* ================================
-   AUDIO (INSANE PART)
-================================ */
-let ctx;
-
-function startAudio(){
-ctx = new (window.AudioContext||window.webkitAudioContext)();
-
-const osc = ctx.createOscillator();
-osc.frequency.value = 40;
-
-const gain = ctx.createGain();
-gain.gain.value = .05;
-
-osc.connect(gain).connect(ctx.destination);
-osc.start();
-
-/* whisper noise */
-setInterval(()=>{
-const burst = ctx.createOscillator();
-burst.type="square";
-burst.frequency.value = 800 + Math.random()*600;
-
-const g = ctx.createGain();
-g.gain.setValueAtTime(0.0001,ctx.currentTime);
-g.gain.linearRampToValueAtTime(.05,ctx.currentTime+.01);
-g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+.2);
-
-burst.connect(g).connect(ctx.destination);
-burst.start();
-burst.stop(ctx.currentTime+.2);
-},1800);
-}
-
-/* ================================
-   CANVAS (MOVING DARK SKY)
-================================ */
-const canvas = document.getElementById("bg");
-const c = canvas.getContext("2d");
-
-let w,h;
-function resize(){
-w=canvas.width=innerWidth;
-h=canvas.height=innerHeight;
-}
-resize();
-window.onresize=resize;
-
-let stars = Array.from({length:120},()=>({
-x:Math.random()*w,
-y:Math.random()*h,
-r:Math.random()*1.5
-}));
-
-function draw(){
-c.fillStyle="#000";
-c.fillRect(0,0,w,h);
-
-for(let s of stars){
-c.fillStyle="rgba(255,255,255,.5)";
-c.fillRect(s.x,s.y,s.r,s.r);
-}
-
-requestAnimationFrame(draw);
-}
-draw();
-
-/* ================================
-   START BUTTON
-================================ */
-document.getElementById("start").onclick=()=>{
-startAudio();
-typeLine(INVITE.lines);
-};
+  /* Stop audio when accept button is tapped (href still opens SMS naturally) */
+  acceptBtn.addEventListener('click', function() {
+    bgAudio.pause();
+    bgAudio.currentTime = 0;
+  });
+  acceptBtn.addEventListener('touchstart', function() {
+    bgAudio.pause();
+    bgAudio.currentTime = 0;
+  }, { passive: true });
 </script>
-
 </body>
 </html>
